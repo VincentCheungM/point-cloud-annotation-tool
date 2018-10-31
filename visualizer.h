@@ -2,9 +2,12 @@
 #define VISUALIZER_H
 
 #include "common.h"
+
 #include <QMainWindow>
 #include <pcl/visualization/PointCloudColorHandlerLUT.h>
-#include <Annotaion.h>
+
+#include "Annotation.h"
+
 
 namespace Ui {
 class MainWindow;

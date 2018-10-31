@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8 FATAL_ERROR)
 
 project(point_cloud_annotation_tool)
+SET(CMAKE_CXX_FLAGS "-std=c++11 -O2")
 
 
 # Hide the console window in visual studio projects - Release
@@ -46,14 +47,14 @@ set(project_source
     main.cpp
     # visualizer.h
     visualizer.cpp
+        # vtkBoxWidgetCallback.h
+        vtkBoxWidgetCallback.cpp
+        # vtkBoxWidgetRestricted.h
+        vtkBoxWidgetRestricted.cpp
+        # vtkAnnotationBoxSource.h
+        vtkAnnotationBoxSource.cpp
     # Annotaion.h
-    Annotaion.cpp
-    # vtkBoxWidgetCallback.h
-    vtkBoxWidgetCallback.cpp
-    # vtkBoxWidgetRestricted.h
-    vtkBoxWidgetRestricted.cpp
-    # vtkAnnotationBoxSource.h
-    vtkAnnotationBoxSource.cpp
+    Annotation.cpp
     # pcl/visualization/pcl_visualizer_extented.h
     pcl/visualization/pcl_visualizer_extented.cpp
     # pcl/visualization/MyCloudLUT.h
@@ -67,12 +68,16 @@ set(project_source
 add_executable(${PROJECT_NAME} ${project_source} ui_mainwindow.h)
 target_link_libraries(${PROJECT_NAME} ${PCL_LIBRARIES} Qt5::Widgets)
 
-option(BUILD_TEST "build test exampes" ON)
-if (BUILD_TEST)
-   add_subdirectory(test)
-endif()
+# option(BUILD_TEST "build test exampes" ON)
+# if (BUILD_TEST)
+#    add_subdirectory(test)
+# endif()
 
-option(BUILD_TOOLS "build tools" ON)
-if (BUILD_TOOLS)
-   add_subdirectory(tool)
-endif()
+# option(BUILD_TOOLS "build tools" ON)
+# if (BUILD_TOOLS)
+#    add_subdirectory(tool)
+# endif()
+
+## Copy config.json file.
+message(STATUS "Copying config file to ${CMAKE_CURRENT_BINARY_DIR}/config/")
+FILE(COPY config/config.json DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/config/)
