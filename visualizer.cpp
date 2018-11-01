@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include <QVTKWidget.h>
 #include <pcl/io/pcd_io.h>
 #include <pcl/sample_consensus/method_types.h>
@@ -85,7 +87,7 @@ void Visualizer::initialize() {
     // init label type
     Annotation::getTypes()->clear();
     // TODO: Using config file for these label types.
-    if (true){
+    if (true/* using config */ && ifstream("./config/config.json")){
         boost::property_tree::ptree pt;
         boost::property_tree::json_parser::read_json("./config/config.json", pt);
         std::cout << "Loading config.json with labels: " << endl;
@@ -95,6 +97,7 @@ void Visualizer::initialize() {
         }
         std::cout << std::endl;
     } else{
+        std::cout << "Config file is not found or config is disable, using default labels." << endl;
         Annotation::getTypes()->push_back("dontCare");
         Annotation::getTypes()->push_back("cyclist");
         Annotation::getTypes()->push_back("pedestrian");
@@ -405,16 +408,21 @@ void Visualizer::planeDetect() {
 }
 
 void Visualizer::openFile() {
+    // Set current path as default path
+    static QString file_path = "./";
     pointcloudFileName =
-        QFileDialog::getOpenFileName(this, tr("Open PCD file"), "/home/fancy",
+        QFileDialog::getOpenFileName(this, tr("Open PCD file"), file_path,
                                      tr("PCD Files (*.pcd *.bin)"))
             .toStdString();
     if (pointcloudFileName.empty()) return;
 
     clear();
     QFileInfo file(QString::fromStdString(pointcloudFileName));
-    QString ext = file.completeSuffix();  // ext = "bin" ,"pcd"
+    
+    // Set history path as default path.
+    file_path = file.path();
 
+    QString ext = file.completeSuffix();  // ext = "bin" ,"pcd"
     if (ext == "pcd") {
         pcl::io::loadPCDFile(pointcloudFileName, *cloud);
     } else {
