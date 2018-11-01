@@ -71,6 +71,7 @@ Visualizer::Visualizer(QWidget* parent)
     ui->threshold_lineEdit->setValidator(new QDoubleValidator(-100, 100, 2));
     connect(ui->threshold_pushButton, &QPushButton::clicked, this,
             &Visualizer::threshold);
+    ground_z = 999;// Init value for ground height
 }
 
 Visualizer::~Visualizer() { delete ui; }
@@ -218,7 +219,7 @@ void Visualizer::groundColorPoint(std::vector<int>& slice) {
 
 void Visualizer::createAnnotationFromSelectPoints(string type) {
     if (last_selected_slice.size() > 3) {
-        Annotation* anno = new Annotation(cloud, last_selected_slice, type);
+        Annotation* anno = new Annotation(cloud, last_selected_slice, type, ground_z);
         annoManager->push_back(anno);
         showAnnotation(anno);
         ui->qvtkWidget->update();
@@ -364,7 +365,7 @@ void Visualizer::planeDetect() {
     seg.setDistanceThreshold(distanceThreshold);
     seg.setInputCloud(cloud);
     seg.segment(*inliers, *coefficients);
-
+    ground_z = -coefficients->values[3];//std::cout << *coefficients << std::endl;
     std::cout << "plane detection: " << inliers->indices.size() << std::endl;
 
     memset(cloudLabel, DEFAULT_POINT, cloud->size() * sizeof(int));

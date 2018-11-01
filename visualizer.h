@@ -45,6 +45,7 @@ protected:
     vector<int> last_selected_slice;
     // manage annotations
     boost::shared_ptr<Annotaions> annoManager;
+    double ground_z;
 
     /**
      * @brief show loaded cloud and annotations
