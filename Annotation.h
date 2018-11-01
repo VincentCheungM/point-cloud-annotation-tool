@@ -68,9 +68,10 @@ class Annotation {
      * @param cloud
      * @param slice
      * @param type_
+     * @param ground_z The ground plane `Z` value.
      */
     Annotation(const PointCloudTPtr cloud, std::vector<int> &slice,
-               std::string type_);
+               std::string type_, double ground_z);
 
     ~Annotation();
 
@@ -184,9 +185,10 @@ class Annotation {
      * @param slice
      * @param p1 min [x,y,z]
      * @param p2 max [x,y,z]
+     * @param ground_z The ground plane `Z` value
      */
     static void computeOBB(const PointCloudTPtr cloud, std::vector<int> &slice,
-                           double p1[3], double p2[3]);
+                           double p1[3], double p2[3], double ground_z);
 
    private:
     /**

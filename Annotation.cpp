@@ -3,6 +3,13 @@
 #include "vtkBoxWidgetCallback.h"
 #include "vtkBoxWidgetRestricted.h"
 
+/*
+* If define `ALIGN_GROUND_PLANE`, the bottom(`Z` value in this case) will
+* be aligned to the ground plane. That means all bottom of bboxes will be the 
+* height of ground plane.
+*/
+#define ALIGN_GROUND_PLANE
+
 // static variable
 std::vector<std::string> *Annotation::types = new std::vector<std::string>();
 
@@ -28,10 +35,12 @@ Annotation::Annotation(const BoxLabel &label, bool visible_, bool lock_)
 }
 
 Annotation::Annotation(const PointCloudTPtr cloud, std::vector<int> &slice,
-                       std::string type_) {
+                       std::string type_, double ground_z) {
     double p1[3];
     double p2[3];
-    computeOBB(cloud, slice, p1, p2);
+
+    computeOBB(cloud, slice, p1, p2, ground_z);
+
     BoxLabel label(p1, p2, type_);
 
     setAnchorPoint(cloud, slice);
@@ -263,7 +272,7 @@ pcl::RGB Annotation::getColor(std::string type_) {
 }
 
 void Annotation::computeOBB(const PointCloudTPtr cloud, std::vector<int> &slice,
-                            double p1[3], double p2[3]) {
+                            double p1[3], double p2[3], double ground_z) {
     p1[0] = std::numeric_limits<double>::max();
     p1[1] = std::numeric_limits<double>::max();
     p1[2] = std::numeric_limits<double>::max();
@@ -282,6 +291,21 @@ void Annotation::computeOBB(const PointCloudTPtr cloud, std::vector<int> &slice,
         p2[1] = std::max(p2[1], (double)cloud->points[i].y);
         p2[2] = std::max(p2[2], (double)cloud->points[i].z);
     }
+
+#ifdef ALIGN_GROUND_PLANE
+    // Use ground plane height as `z` lower bound
+    if (ground_z < 0) {
+        std::cout << "Using ground_z: " << ground_z << " org: " << p1[2]
+                  << std::endl;
+        p1[2] = ground_z;
+        // Assuming the size of slice is greater than 0
+        cloud->points[slice[0]].z = ground_z;
+    } else {
+        std::cout << "Not using ground_z: " << ground_z << " org: " << p1[2]
+                  << std::endl;
+    }
+#endif
+
 }
 
 Annotation *Annotaions::getAnnotation(vtkActor *actor) {
