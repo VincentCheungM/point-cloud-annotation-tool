@@ -1,3 +1,27 @@
+/*
+* MIT License
+* 
+* Copyright (c) 2018 Vincent Cheung
+* Copyright (c) 2018 Fancy Zhang
+* 
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+*/
 #include "Annotation.h"
 #include "vtkAnnotationBoxSource.h"
 #include "vtkBoxWidgetCallback.h"
@@ -14,7 +38,8 @@
 std::vector<std::string> *Annotation::types = new std::vector<std::string>();
 
 Annotation::Annotation(const BoxLabel &label, bool visible_, bool lock_)
-    : visible(visible_), lock(lock_) {
+    : visible(visible_), lock(lock_)
+{
     // type
     type = label.type;
 
@@ -35,7 +60,8 @@ Annotation::Annotation(const BoxLabel &label, bool visible_, bool lock_)
 }
 
 Annotation::Annotation(const PointCloudTPtr cloud, std::vector<int> &slice,
-                       std::string type_, double ground_z) {
+                       std::string type_, double ground_z)
+{
     double p1[3];
     double p2[3];
 
@@ -63,15 +89,18 @@ Annotation::Annotation(const PointCloudTPtr cloud, std::vector<int> &slice,
     applyTransform(cubeTransform);
 }
 
-Annotation::~Annotation() {
+Annotation::~Annotation()
+{
     // release anchorPoints
-    for (auto p : anchorPoints) {
+    for (auto p : anchorPoints)
+    {
         delete[] p;
     }
     anchorPoints.clear();
 }
 
-BoxLabel Annotation::getBoxLabel() {
+BoxLabel Annotation::getBoxLabel()
+{
     BoxLabel label;
     label.type = type;
 
@@ -87,14 +116,17 @@ BoxLabel Annotation::getBoxLabel() {
     return label;
 }
 
-void Annotation::applyTransform(vtkSmartPointer<vtkTransform> t) {
-    if (t == transform) return;
+void Annotation::applyTransform(vtkSmartPointer<vtkTransform> t)
+{
+    if (t == transform)
+        return;
 
     transform = t;
     actor->SetUserTransform(t);
 }
 
-void Annotation::picked(vtkRenderWindowInteractor *interactor) {
+void Annotation::picked(vtkRenderWindowInteractor *interactor)
+{
     // enable box widget
     boxWidget = vtkSmartPointer<vtkBoxWidgetRestricted>::New();
     boxWidgetCallback0 = vtkSmartPointer<vtkBoxWidgetCallback0>::New();
@@ -126,18 +158,20 @@ void Annotation::picked(vtkRenderWindowInteractor *interactor) {
 
 void Annotation::unpicked() { boxWidget->Off(); }
 
-void Annotation::adjustToAnchor() {
-    if (anchorPoints.size() == 0) return;
+void Annotation::adjustToAnchor()
+{
+    if (anchorPoints.size() == 0)
+        return;
 
     transform->GetPosition(center);
 
     double r[3], x[3], y[3], z[3] = {0, 0, 1};
-    double s[3];  // scale
+    double s[3]; // scale
 
     transform->GetOrientation(r);
     x[0] = cos(vtkMath::RadiansFromDegrees(r[2]));
     x[1] = sin(vtkMath::RadiansFromDegrees(r[2]));
-    x[2] = 0;  // direction
+    x[2] = 0; // direction
     vtkMath::Cross(z, x, y);
 
     double scs[2];
@@ -165,8 +199,10 @@ void Annotation::adjustToAnchor() {
 
 std::string Annotation::getType() const { return type; }
 
-void Annotation::setType(const std::string value) {
-    if (value != type) {
+void Annotation::setType(const std::string value)
+{
+    if (value != type)
+    {
         type = value;
         colorAnnotation();
     }
@@ -174,7 +210,8 @@ void Annotation::setType(const std::string value) {
 
 vtkSmartPointer<vtkActor> Annotation::getActor() const { return actor; }
 
-void Annotation::initial() {
+void Annotation::initial()
+{
     // Cube
     source = vtkSmartPointer<vtkAnnotationBoxSource>::New();
     mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -185,17 +222,21 @@ void Annotation::initial() {
     colorAnnotation();
 }
 
-void Annotation::colorAnnotation(int color_index) {
+void Annotation::colorAnnotation(int color_index)
+{
     vtkSmartPointer<vtkLookupTable> lut =
         vtkSmartPointer<vtkLookupTable>::New();
     lut->SetNumberOfTableValues(2);
     lut->Build();
 
-    if (color_index < 0) {
+    if (color_index < 0)
+    {
         pcl::RGB c = getColor(type);
         lut->SetTableValue(0, c.r / 255.0, c.g / 255.0, c.b / 255.0, 0);
         lut->SetTableValue(1, c.r / 255.0, c.g / 255.0, c.b / 255.0, 1);
-    } else {
+    }
+    else
+    {
         pcl::RGB c = pcl::GlasbeyLUT::at(color_index);
         lut->SetTableValue(0, c.r / 255.0, c.g / 255.0, c.b / 255.0, 0);
         lut->SetTableValue(1, c.r / 255.0, c.g / 255.0, c.b / 255.0, 1);
@@ -205,12 +246,14 @@ void Annotation::colorAnnotation(int color_index) {
         vtkSmartPointer<vtkFloatArray>::New();
 
     // line color
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < 12; i++)
+    {
         cellData->InsertNextValue(1);
     }
 
     // face color
-    for (int i = 0; i < 6; i++) {
+    for (int i = 0; i < 6; i++)
+    {
         cellData->InsertNextValue(0);
     }
 
@@ -227,9 +270,11 @@ void Annotation::colorAnnotation(int color_index) {
 }
 
 void Annotation::setAnchorPoint(const PointCloudTPtr cloud,
-                                const std::vector<int> &slice) {
+                                const std::vector<int> &slice)
+{
     anchorPoints.clear();
-    for (auto i : slice) {
+    for (auto i : slice)
+    {
         double *p = new double[3];
         p[0] = cloud->points[i].x;
         p[1] = cloud->points[i].y;
@@ -238,7 +283,8 @@ void Annotation::setAnchorPoint(const PointCloudTPtr cloud,
     }
 }
 
-double Annotation::computeScaleAndCenterShift(double o[], double scs[]) {
+double Annotation::computeScaleAndCenterShift(double o[], double scs[])
+{
     vtkMath::Normalize(o);
 
     double a, b;
@@ -246,7 +292,8 @@ double Annotation::computeScaleAndCenterShift(double o[], double scs[]) {
     b = std::numeric_limits<double>::max();
 
     double t[3];
-    for (auto x : anchorPoints) {
+    for (auto x : anchorPoints)
+    {
         vtkMath::Subtract(x, this->center, t);
         double s = vtkMath::Dot(t, o);
         a = std::max(a, s);
@@ -259,20 +306,25 @@ double Annotation::computeScaleAndCenterShift(double o[], double scs[]) {
 
 std::vector<std::string> *Annotation::getTypes() { return types; }
 
-int Annotation::getTypeIndex(std::string type_) {
-    for (int i = 0; i < types->size(); i++) {
-        if (types->at(i) == type_) return i;
+int Annotation::getTypeIndex(std::string type_)
+{
+    for (int i = 0; i < types->size(); i++)
+    {
+        if (types->at(i) == type_)
+            return i;
     }
     types->push_back(type_);
     return types->size() - 1;
 }
 
-pcl::RGB Annotation::getColor(std::string type_) {
+pcl::RGB Annotation::getColor(std::string type_)
+{
     return pcl::GlasbeyLUT::at(getTypeIndex(type_));
 }
 
 void Annotation::computeOBB(const PointCloudTPtr cloud, std::vector<int> &slice,
-                            double p1[3], double p2[3], double ground_z) {
+                            double p1[3], double p2[3], double ground_z)
+{
     p1[0] = std::numeric_limits<double>::max();
     p1[1] = std::numeric_limits<double>::max();
     p1[2] = std::numeric_limits<double>::max();
@@ -282,7 +334,8 @@ void Annotation::computeOBB(const PointCloudTPtr cloud, std::vector<int> &slice,
     p2[1] = -std::numeric_limits<double>::max();
     p2[2] = -std::numeric_limits<double>::max();
 
-    for (auto i : slice) {
+    for (auto i : slice)
+    {
         p1[0] = std::min(p1[0], (double)cloud->points[i].x);
         p1[1] = std::min(p1[1], (double)cloud->points[i].y);
         p1[2] = std::min(p1[2], (double)cloud->points[i].z);
@@ -294,23 +347,28 @@ void Annotation::computeOBB(const PointCloudTPtr cloud, std::vector<int> &slice,
 
 #ifdef ALIGN_GROUND_PLANE
     // Use ground plane height as `z` lower bound
-    if (ground_z < 0) {
+    if (ground_z < 0)
+    {
         std::cout << "Using ground_z: " << ground_z << " org: " << p1[2]
                   << std::endl;
         p1[2] = ground_z;
         // Assuming the size of slice is greater than 0
         cloud->points[slice[0]].z = ground_z;
-    } else {
+    }
+    else
+    {
         std::cout << "Not using ground_z: " << ground_z << " org: " << p1[2]
                   << std::endl;
     }
 #endif
-
 }
 
-Annotation *Annotaions::getAnnotation(vtkActor *actor) {
-    for (auto *anno : annotations) {
-        if (anno->getActor() == actor) {
+Annotation *Annotaions::getAnnotation(vtkActor *actor)
+{
+    for (auto *anno : annotations)
+    {
+        if (anno->getActor() == actor)
+        {
             return anno;
         }
     }
@@ -319,13 +377,16 @@ Annotation *Annotaions::getAnnotation(vtkActor *actor) {
 
 void Annotaions::push_back(Annotation *anno) { annotations.push_back(anno); }
 
-void Annotaions::remove(Annotation *anno) {
+void Annotaions::remove(Annotation *anno)
+{
     annotations.erase(std::remove(annotations.begin(), annotations.end(), anno),
                       annotations.end());
 }
 
-void Annotaions::clear() {
-    for (auto p : annotations) {
+void Annotaions::clear()
+{
+    for (auto p : annotations)
+    {
         delete p;
     }
     annotations.clear();
@@ -333,19 +394,23 @@ void Annotaions::clear() {
 
 int Annotaions::getSize() { return annotations.size(); }
 
-void Annotaions::loadAnnotations(std::string filename) {
+void Annotaions::loadAnnotations(std::string filename)
+{
     annotations.clear();
 
     std::ifstream input(filename.c_str(), std::ios_base::in);
-    if (!input.good()) {
+    if (!input.good())
+    {
         std::cerr << "Cannot open file : " << filename << std::endl;
         return;
     }
     std::string type;
-    while (input >> type) {
+    while (input >> type)
+    {
         BoxLabel label;
         label.type = type;
-        for (int j = 0; j < 7; j++) {
+        for (int j = 0; j < 7; j++)
+        {
             input >> label.data[j];
         }
         annotations.push_back(new Annotation(label));
@@ -355,10 +420,13 @@ void Annotaions::loadAnnotations(std::string filename) {
     input.close();
 }
 
-void Annotaions::saveAnnotations(std::string filename) {
-    if (annotations.empty()) return;
+void Annotaions::saveAnnotations(std::string filename)
+{
+    if (annotations.empty())
+        return;
     std::ofstream output(filename.c_str(), std::ios_base::out);
-    for (auto anno : annotations) {
+    for (auto anno : annotations)
+    {
         output << anno->getBoxLabel().toString() << std::endl;
     }
     output.close();
