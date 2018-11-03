@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>982</width>
-    <height>640</height>
+    <width>1105</width>
+    <height>647</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,10 +48,16 @@
         </layout>
        </widget>
        <widget class="QGroupBox" name="groupBox_Types">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="maximumSize">
          <size>
           <width>200</width>
-          <height>200</height>
+          <height>16777215</height>
          </size>
         </property>
         <property name="title">
@@ -63,10 +69,16 @@
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
          <widget class="QLabel" name="label_filename">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>15</height>
+            <height>16777215</height>
            </size>
           </property>
           <property name="text">
@@ -75,7 +87,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QVTKWidget" name="qvtkWidget">
+         <widget class="QVTKWidget" name="qvtkWidget" native="true">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
             <horstretch>0</horstretch>
@@ -92,6 +104,12 @@
         </item>
         <item>
          <widget class="QLabel" name="label_message">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="maximumSize">
            <size>
             <width>16777215</width>
@@ -114,8 +132,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>982</width>
-     <height>16</height>
+     <width>1105</width>
+     <height>39</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -168,7 +186,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <widget class="QDockWidget" name="PlaneDetect_dockWidget">
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+    <sizepolicy hsizetype="Ignored" vsizetype="MinimumExpanding">
      <horstretch>1</horstretch>
      <verstretch>1</verstretch>
     </sizepolicy>
@@ -194,9 +212,15 @@
       <rect>
        <x>0</x>
        <y>10</y>
-       <width>128</width>
-       <height>111</height>
+       <width>201</width>
+       <height>281</height>
       </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
      <property name="title">
       <string>Detect Ground</string>
@@ -205,30 +229,58 @@
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>DistanceThreshold:</string>
+         <string>Threshold:</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="distanceThreshold_lineEdit"/>
-      </item>
-      <item>
-       <widget class="QCheckBox" name="removePlane_checkBox">
-        <property name="text">
-         <string>remove plane</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="applyPlaneDetection_pushButton">
+       <widget class="QLineEdit" name="distanceThreshold_lineEdit">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="maximumSize">
+         <size>
+          <width>300</width>
+          <height>300</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="removePlane_checkBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>remove</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="applyPlaneDetection_pushButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>300</width>
+          <height>300</height>
+         </size>
+        </property>
         <property name="text">
          <string>Apply</string>
+        </property>
+        <property name="flat">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
@@ -246,7 +298,7 @@
       <rect>
        <x>0</x>
        <y>20</y>
-       <width>121</width>
+       <width>261</width>
        <height>101</height>
       </rect>
      </property>

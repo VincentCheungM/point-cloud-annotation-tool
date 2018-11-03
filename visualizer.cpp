@@ -60,7 +60,11 @@ Visualizer::Visualizer(QWidget* parent)
             &QDockWidget::show);
 
     ui->PlaneDetect_dockWidget->hide();
+    ui->groupBox->adjustSize();
+    ui->removePlane_checkBox->adjustSize();
     ui->distanceThreshold_lineEdit->setText("0.1");
+    ui->distanceThreshold_lineEdit->adjustSize();
+    ui->PlaneDetect_dockWidget->adjustSize();
     ui->distanceThreshold_lineEdit->setValidator(
         new QDoubleValidator(-5, 5, 2));
     connect(ui->applyPlaneDetection_pushButton, &QPushButton::clicked, this,
@@ -122,9 +126,7 @@ void Visualizer::initialize() {
         layout->addWidget(button);
     }
     ui->groupBox_Types->setLayout(layout);
-    ui->groupBox_Types->setMaximumWidth(200);
-    ui->groupBox_Types->setMaximumHeight(200);
-
+    ui->groupBox_Types->adjustSize();// using ajustsize instead
     // init annotation
     annoManager.reset(new Annotaions());
     currPickedAnnotation = NULL;
@@ -150,6 +152,7 @@ void Visualizer::refresh() {
     memset(cloudLabel, 0, cloud->size() * sizeof(int));
 
     ui->label_filename->setText(QString::fromStdString(pointcloudFileName));
+    ui->label_filename->adjustSize();
     colorHandler.setInputCloud(cloud);
     colorHandler.setLabel(cloudLabel);
     viewer->addPointCloud<PointT>(cloud, colorHandler, "cloud", 0);
